@@ -1,0 +1,21 @@
+server {
+  listen 80;
+  # фронт-проект будем открывать в броузере по адресу localhost:80, или просто localhost (!).
+
+  server_name localhost;
+
+  location / {
+    proxy_pass http://frontend:8080;
+  }
+
+  location /api {
+    proxy_pass http://api:3001;
+    rewrite ^/api/(.*) /$1 break;
+  }
+
+  # обращаемся к auth из Vue-проекта, минуя api-сервис.
+  location /auth {
+    proxy_pass http://auth:3002;
+    rewrite ^/auth/(.*) /$1 break;
+  }
+}
